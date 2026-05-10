@@ -1,9 +1,15 @@
 from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager
 from config import config
 
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
+ma = Marshmallow()
+jwt = JWTManager()
 
 
 def create_app(config_name):
@@ -11,6 +17,9 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     db.init_app(app)
+    bcrypt.init_app(app)
+    ma.init_app(app)
+    jwt.init_app(app)
 
     from app.api_v1 import api 
     app.register_blueprint(api)
