@@ -3,6 +3,7 @@ from app.models.model import User
 from app import db 
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import (create_access_token,create_refresh_token,get_jwt, get_jwt_identity)
 
 
 class UserService:
@@ -93,7 +94,34 @@ class UserService:
         except Exception as err:
             db.session.rollback()
             return None, {"error": str(err)}, 500
+    
+
+    def login(self, email_or_username, password):
+        try:
+            user = User.query.filter(
+                (User.username==email_or_username)|
+                (User.email==email_or_username)
+            ).first()
+            if not user:
+                return None, {"error":"Invalid Credentials"},401
+            
+            if not user.verify_password(password):
+                return None, {"error": "Invalid email/username or password"}, 401
+            
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
+
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "user": self.user_schema.dump(user)
+            }, None, 200
         
+        except Exception as err:
+            db.session.rollback()
+            return None,{"error": str(err)},500
+
+            
         
 
     
