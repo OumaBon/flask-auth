@@ -1,6 +1,6 @@
 import os 
 from dotenv import load_dotenv
-
+from datetime import timedelta
 load_dotenv()
 
 
@@ -12,6 +12,19 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY") or \
     "Iwantolovethenatureofcodingandsucksups"
     DEBUG = True
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY") or \
+    "somethingIdontwanttoshare"
+    JWT_ACCESS_TOKEN_EXPIRES = os.getenv("TOKEN_EXPIRES") or \
+    timedelta(hours=1)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
+    JWT_REFRESH_COOKIE_NAME = "refresh_token_cookie"
+    JWT_COOKIE_HTTPONLY = True
+    JWT_COOKIE_SECURE = False 
+    JWT_COOKIE_SAMESITE = "Lax"
+    JWT_COOKIE_CSRF_PROTECT = True
+
 
     @staticmethod
     def init_app(self):
