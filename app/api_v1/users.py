@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from app.service.service import UserService
+from flask_jwt_extended import jwt_required
 from . import api 
 
 
@@ -16,6 +17,7 @@ def new_user():
 
 
 @api.route("/users", methods=["GET"])
+@jwt_required()
 def users():
     users,error,status_code = user_service.get_users()
     if error:
