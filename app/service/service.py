@@ -120,13 +120,25 @@ class UserService:
         except Exception as err:
             db.session.rollback()
             return None,{"error": str(err)},500
+    
+    def logout(self,token_jti):
+        try:
+            self.blacklisted_tokens.add(token_jti)
+            return {"message": "Logout Successful"}, None, 200
+        except Exception as err:
+            return None, {"error": str(err)}, 500
+
 
             
         
 
     
 
-        
+
+
+
+
+user_schema  = UserSchema()
 
     
             
